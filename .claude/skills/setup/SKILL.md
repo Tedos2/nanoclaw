@@ -1,6 +1,7 @@
 ---
 name: setup
 description: Run initial NanoClaw setup. Use when user wants to install dependencies, authenticate messaging channels, register their main channel, or start the background services. Triggers on "setup", "install", "configure nanoclaw", or first-time setup requests.
+allowed-tools: Bash(git remote*), Bash(bash setup.sh), Bash(pnpm exec tsx setup/index.ts*)
 ---
 
 # NanoClaw Setup
@@ -34,16 +35,16 @@ If they decline, continue — they'll approve commands individually.
 
 ## 0. Git Upstream
 
-Ensure `upstream` remote points to `qwibitai/nanoclaw`. If missing, add it silently:
+Ensure `upstream` remote points to `qwibitai/nanoclaw`. If missing, add it silently.
 
-```bash
-git remote -v
+```!
 git remote add upstream https://github.com/qwibitai/nanoclaw.git 2>/dev/null || true
+git remote -v
 ```
 
 ## 1. Bootstrap (Node.js + Dependencies)
 
-Run `bash setup.sh` and parse the status block.
+Output from !`bash setup.sh` — parse the status block.
 
 - If NODE_OK=false → Node.js is missing or too old. Use `AskUserQuestion: Would you like me to install Node.js 22?` If confirmed:
   - macOS: `brew install node@22` (if brew available) or install nvm then `nvm install 22`
@@ -55,7 +56,7 @@ Run `bash setup.sh` and parse the status block.
 
 ## 2. Check Environment
 
-Run `pnpm exec tsx setup/index.ts --step environment` and parse the status block.
+Output from !`pnpm exec tsx setup/index.ts --step environment` — parse the status block.
 
 - If HAS_AUTH=true → WhatsApp is already configured, note for step 5
 - If HAS_REGISTERED_GROUPS=true → note existing config, offer to skip or reconfigure
@@ -73,7 +74,7 @@ If "Migrate now": invoke `/migrate-from-openclaw`, then return here and continue
 
 ## 2a. Timezone
 
-Run `pnpm exec tsx setup/index.ts --step timezone` and parse the status block.
+Output from !`pnpm exec tsx setup/index.ts --step timezone` — parse the status block.
 
 - If NEEDS_USER_INPUT=true → The system timezone could not be autodetected (e.g. POSIX-style TZ like `IST-2`). AskUserQuestion: "What is your timezone?" with common options (America/New_York, Europe/London, Asia/Jerusalem, Asia/Tokyo) and an "Other" escape. Then re-run: `pnpm exec tsx setup/index.ts --step timezone -- --tz <their-answer>`.
 - If STATUS=success and RESOLVED_TZ is `UTC` or `Etc/UTC` → confirm with the user: "Your system timezone is UTC — is that correct, or are you on a remote server?" If wrong, ask for their actual timezone and re-run with `--tz`.
