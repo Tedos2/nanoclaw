@@ -36,3 +36,10 @@ groups/global/*
 .nanoclaw/
 
 agents-sdk-docs
+
+# Personal vault (self-versioned as its own git repo)
+vault/
+
+# Claude Code worktrees and local save dirs
+.claude/worktrees/
+.claude/.nanotedsave-claude/
